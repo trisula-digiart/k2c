@@ -17,6 +17,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { CompactOrderTable } from "@/components/admin/CompactOrderTable";
+import { AdminNav } from "@/components/admin/AdminNav";
 import { Button } from "@/components/ui/Button";
 import { OrderStatus } from "@/lib/types";
 
@@ -112,49 +113,7 @@ export default function AdminDashboardPage() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
       {/* Top Navigation Bar */}
-      <header className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-6 py-3.5">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center font-black text-white text-lg shadow-lg shadow-blue-500/20">
-              K2C
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-base font-bold text-white tracking-tight">
-                  K2C KOMPUTINDO
-                </h1>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">
-                  DESKTOP ADMIN HUB
-                </span>
-              </div>
-              <p className="text-xs text-slate-400">
-                Modern Compact POS &amp; Live Dispatch Board
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Link
-              href="/tech"
-              target="_blank"
-              className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-medium flex items-center gap-2 transition-all"
-            >
-              <Smartphone className="w-4 h-4 text-sky-400" />
-              <span>Buka Mobile Hub Teknisi (PWA)</span>
-            </Link>
-
-            <Link href="/admin/orders/new">
-              <Button
-                variant="primary"
-                size="sm"
-                icon={<Plus className="w-4 h-4" />}
-              >
-                Buat Pesanan Baru
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </header>
+      <AdminNav />
 
       {/* Main Container */}
       <main className="p-6 flex-1 flex flex-col gap-6 max-w-7xl mx-auto w-full">
