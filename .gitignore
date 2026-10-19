@@ -1,0 +1,13 @@
+node_modules
+/.next/
+/out/
+.env*.local
+.env
+dev.db
+dev.db-journal
+/public/uploads/qc-videos/*
+!/public/uploads/qc-videos/.gitkeep
+/public/uploads/returns/*
+!/public/uploads/returns/.gitkeep
+/public/uploads/dispatches/*
+!/public/uploads/dispatches/.gitkeep

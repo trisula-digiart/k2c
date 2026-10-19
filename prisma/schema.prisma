@@ -1,0 +1,43 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Order {
+  id             String       @id @default(cuid())
+  orderNumber    String       @unique
+  receiptNumber  String       @unique
+  marketplace    String       // Tokopedia, Shopee, TikTok Shop, Offline
+  customerName   String
+  customerPhone  String?
+  status         String       @default("PENDING") // PENDING, QC_IN_PROGRESS, QC_COMPLETED, PACKED, DISPATCHED, COMPLETED, RETURNED
+  publicToken    String       @unique @default(cuid())
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  items          OrderItem[]
+  mediaProofs    MediaProof[]
+}
+
+model OrderItem {
+  id           String  @id @default(cuid())
+  orderId      String
+  order        Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  itemName     String
+  qty          Int     @default(1)
+  price        Float
+  serialNumber String?
+}
+
+model MediaProof {
+  id            String    @id @default(cuid())
+  orderId       String
+  order         Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  type          String    // QC_VIDEO, DISPATCH_PHOTO, RETURN_UNBOXING
+  filePath      String
+  watermarkData String?   // JSON stringified: { timestamp, latitude, longitude, note }
+  createdAt     DateTime  @default(now())
+}
