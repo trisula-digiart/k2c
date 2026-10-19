@@ -1,24 +1,39 @@
 {
-  "name": "K2C Teknisi Hub",
-  "short_name": "K2C Teknisi",
-  "description": "Mobile Technician & QC Hub for K2C Komputindo",
-  "start_url": "/tech",
+  "name": "K2C Komputindo Hub",
+  "short_name": "K2C Hub",
+  "description": "Aplikasi POS, QC Tracker & Mobile Hub K2C Komputindo",
+  "start_url": "/",
+  "scope": "/",
+  "id": "/",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#0f172a",
-  "orientation": "any",
+  "background_color": "#020617",
+  "theme_color": "#020617",
+  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "/icons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
-  ]
+  ],
+  "categories": ["business", "productivity", "shopping"]
 }
