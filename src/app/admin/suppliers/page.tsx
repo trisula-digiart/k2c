@@ -236,10 +236,10 @@ export default function AdminSuppliersPage() {
   }, [suppliers, selectedCategory, search]);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col pb-20 md:pb-6">
       <AdminNav />
 
-      <main className="p-4 sm:p-6 flex-1 flex flex-col gap-6 max-w-7xl mx-auto w-full">
+      <main className="p-3.5 sm:p-6 flex-1 flex flex-col gap-4 sm:gap-6 max-w-7xl mx-auto w-full">
         {/* Page Title & Quick Action */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-2 border-b border-slate-800/80">
           <div>
@@ -390,8 +390,114 @@ export default function AdminSuppliersPage() {
           </div>
         </div>
 
-        {/* Suppliers Table */}
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/50 backdrop-blur-sm overflow-hidden shadow-xl">
+        {/* 1. SHOPEE SELLER MOBILE SUPPLIER CARDS (Smartphone View) */}
+        <div className="md:hidden space-y-2.5">
+          {loading ? (
+            <div className="py-12 text-center text-slate-400 text-xs">
+              <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-amber-500" />
+              Memuat data supplier...
+            </div>
+          ) : filteredSuppliers.length === 0 ? (
+            <div className="py-12 text-center text-slate-400 bg-slate-900/50 rounded-2xl border border-slate-800">
+              <Building2 className="w-10 h-10 mx-auto mb-2 text-slate-600" />
+              <p className="text-sm font-semibold text-slate-300">
+                Tidak ada supplier ditemukan
+              </p>
+            </div>
+          ) : (
+            filteredSuppliers.map((s) => {
+              const catInfo = SUPPLIER_CATEGORIES[s.category || "HARDWARE"] || {
+                label: s.category || "Hardware",
+                badge: "bg-slate-800 text-slate-300 border-slate-700",
+                icon: <Layers className="w-3.5 h-3.5" />,
+              };
+              const waUrl = formatWhatsAppUrl(s.phone);
+
+              return (
+                <div
+                  key={s.id}
+                  className="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 space-y-2.5 shadow-md"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-lg bg-amber-500/15 text-amber-400 border border-amber-500/30 flex items-center justify-center font-bold text-xs shrink-0">
+                        <Building2 className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="font-bold text-white text-xs">{s.name}</div>
+                        <span
+                          className={`inline-flex items-center gap-1 px-1.5 py-0.2 rounded-full text-[9px] font-semibold border ${catInfo.badge} mt-0.5`}
+                        >
+                          {catInfo.icon}
+                          <span>{catInfo.label}</span>
+                        </span>
+                      </div>
+                    </div>
+
+                    {waUrl && (
+                      <a
+                        href={waUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-2.5 py-1 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs font-semibold flex items-center gap-1"
+                      >
+                        <MessageCircle className="w-3.5 h-3.5" />
+                        <span>Chat WA</span>
+                      </a>
+                    )}
+                  </div>
+
+                  {s.contactPerson && (
+                    <div className="text-[11px] text-slate-300">
+                      PIC: <b className="text-white">{s.contactPerson}</b>
+                      {s.phone && <span className="font-mono text-slate-400 ml-1.5">({s.phone})</span>}
+                    </div>
+                  )}
+
+                  {s.address && (
+                    <div className="text-[11px] text-slate-400 flex items-start gap-1 line-clamp-2">
+                      <MapPin className="w-3.5 h-3.5 text-slate-500 shrink-0 mt-0.5" />
+                      <span>{s.address}</span>
+                    </div>
+                  )}
+
+                  {s.notes && (
+                    <div className="text-[10px] text-slate-400 italic bg-slate-950 p-2 rounded-lg border border-slate-800/80">
+                      {s.notes}
+                    </div>
+                  )}
+
+                  <div className="flex items-center justify-between pt-1 border-t border-slate-800/60">
+                    <a
+                      href="/admin/purchases"
+                      className="text-xs font-semibold text-blue-400 hover:text-blue-300 flex items-center gap-1"
+                    >
+                      <span>Lihat PO</span>
+                    </a>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => openEditModal(s)}
+                        className="px-3 py-1 rounded-lg bg-slate-800 text-xs font-medium text-slate-300"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDeleteSupplier(s)}
+                        className="px-3 py-1 rounded-lg bg-red-500/10 text-xs font-medium text-red-400"
+                      >
+                        Hapus
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        {/* 2. DESKTOP ERP TABLE (PC View) */}
+        <div className="hidden md:block rounded-2xl border border-slate-800 bg-slate-900/50 backdrop-blur-sm overflow-hidden shadow-xl">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-950/90 text-slate-400 border-b border-slate-800 uppercase tracking-wider text-[10px] font-bold">

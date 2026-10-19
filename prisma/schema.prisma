@@ -43,16 +43,17 @@ model MediaProof {
 }
 
 model Product {
-  id          String   @id @default(cuid())
-  sku         String   @unique
-  name        String
-  category    String   // PC_FULLSET, MONITOR, VGA, PROCESSOR, STORAGE_RAM, ACCESSORY
-  price       Float
-  costPrice   Float    @default(0)
-  stock       Int      @default(0)
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                 String              @id @default(cuid())
+  sku                String              @unique
+  name               String
+  category           String              // PC_FULLSET, MONITOR, VGA, PROCESSOR, STORAGE_RAM, ACCESSORY
+  price              Float
+  costPrice          Float               @default(0)
+  stock              Int                 @default(0)
+  description        String?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  purchaseOrderItems PurchaseOrderItem[]
 }
 
 model Customer {
@@ -68,14 +69,42 @@ model Customer {
 }
 
 model Supplier {
-  id            String   @id @default(cuid())
-  name          String
-  contactPerson String?
-  phone         String?
-  email         String?
-  address       String?
-  category      String?  // HARDWARE, MONITOR, ACCESSORIES, LOGISTICS
+  id             String          @id @default(cuid())
+  name           String
+  contactPerson  String?
+  phone          String?
+  email          String?
+  address        String?
+  category       String?         // HARDWARE, MONITOR, ACCESSORIES, LOGISTICS
+  notes          String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  purchaseOrders PurchaseOrder[]
+}
+
+model PurchaseOrder {
+  id            String              @id @default(cuid())
+  poNumber      String              @unique // e.g. PO-20261019-001
+  invoiceNumber String?             // No. Nota / Faktur dari Supplier
+  supplierId    String
+  supplier      Supplier            @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  status        String              @default("ORDERED") // DRAFT, ORDERED, RECEIVED, CANCELLED
+  totalAmount   Float               @default(0)
+  paymentStatus String              @default("UNPAID") // UNPAID, PARTIAL, PAID
   notes         String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  items         PurchaseOrderItem[]
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+}
+
+model PurchaseOrderItem {
+  id              String        @id @default(cuid())
+  purchaseOrderId String
+  purchaseOrder   PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+  productId       String?
+  product         Product?      @relation(fields: [productId], references: [id], onDelete: SetNull)
+  itemName        String
+  qty             Int           @default(1)
+  costPrice       Float         @default(0)
+  receivedQty     Int           @default(0)
 }

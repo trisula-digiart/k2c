@@ -111,12 +111,12 @@ export default function AdminDashboardPage() {
   const returnedCount = orders.filter((o) => o.status === "RETURNED").length;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col pb-20 md:pb-6">
       {/* Top Navigation Bar */}
       <AdminNav />
 
       {/* Main Container */}
-      <main className="p-6 flex-1 flex flex-col gap-6 max-w-7xl mx-auto w-full">
+      <main className="p-3.5 sm:p-6 flex-1 flex flex-col gap-4 sm:gap-6 max-w-7xl mx-auto w-full">
         {/* KPI Summary Cards */}
         <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
           <div

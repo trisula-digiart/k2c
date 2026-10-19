@@ -11,8 +11,10 @@ import {
   Smartphone,
   Plus,
   Home,
+  ShoppingBag,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { ShopeeBottomNav } from "@/components/admin/ShopeeBottomNav";
 
 export const AdminNav: React.FC = () => {
   const pathname = usePathname();
@@ -20,12 +22,14 @@ export const AdminNav: React.FC = () => {
   const navItems = [
     { href: "/admin", label: "Live Orders & POS", icon: <LayoutDashboard className="w-4 h-4" /> },
     { href: "/admin/products", label: "Daftar Produk", icon: <Package className="w-4 h-4" /> },
+    { href: "/admin/purchases", label: "Order Pembelian (PO)", icon: <ShoppingBag className="w-4 h-4" /> },
     { href: "/admin/customers", label: "Data Pelanggan", icon: <Users className="w-4 h-4" /> },
     { href: "/admin/suppliers", label: "Data Supplier", icon: <Building2 className="w-4 h-4" /> },
   ];
 
   return (
-    <header className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-6 py-3">
+    <>
+    <header className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 sm:px-6 py-3">
       <div className="flex items-center justify-between gap-4">
         {/* Brand */}
         <div className="flex items-center gap-3">
@@ -90,27 +94,8 @@ export const AdminNav: React.FC = () => {
           </Link>
         </div>
       </div>
-
-      {/* Mobile Nav Tabs Bar */}
-      <div className="md:hidden flex items-center gap-1 mt-2.5 overflow-x-auto no-scrollbar pt-1 border-t border-slate-800/60">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`px-2.5 py-1 rounded-lg text-xs font-medium whitespace-nowrap flex items-center gap-1 ${
-                isActive
-                  ? "bg-blue-600 text-white"
-                  : "text-slate-400 hover:text-white"
-              }`}
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </Link>
-          );
-        })}
-      </div>
     </header>
+    <ShopeeBottomNav />
+    </>
   );
 };

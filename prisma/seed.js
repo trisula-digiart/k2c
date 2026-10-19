@@ -503,7 +503,81 @@ async function main() {
     console.log(`Created order: ${created.orderNumber} (${created.marketplace})`);
   }
 
-  console.log("Database seeded successfully with all genuine products from pc-workshop-hub, customers, suppliers, and orders!");
+  // 6. Seed Purchase Orders
+  const nusantara = await prisma.supplier.findFirst({
+    where: { name: { contains: "Nusantara" } },
+  });
+  const cahaya = await prisma.supplier.findFirst({
+    where: { name: { contains: "Cahaya" } },
+  });
+  const i5Product = await prisma.product.findFirst({
+    where: { sku: "PC-I5-8-500-CPU" },
+  });
+  const ramProduct = await prisma.product.findFirst({
+    where: { sku: "RAM-DDR3-4GB-PC12800" },
+  });
+  const mon19 = await prisma.product.findFirst({
+    where: { sku: "MON-LCD-19-WIDE" },
+  });
+
+  if (nusantara) {
+    await prisma.purchaseOrder.create({
+      data: {
+        poNumber: "PO-20261019-001",
+        invoiceNumber: "INV-NJ-88219",
+        supplierId: nusantara.id,
+        status: "ORDERED",
+        totalAmount: 6650000,
+        paymentStatus: "UNPAID",
+        notes: "Pengiriman via kurir toko, estimasi tiba sore hari.",
+        items: {
+          create: [
+            {
+              productId: i5Product ? i5Product.id : null,
+              itemName: "PC CPU Komputer Core i5 RAM 8GB HDD 500GB CPU Saja Quad Core",
+              qty: 5,
+              costPrice: 1200000,
+              receivedQty: 0,
+            },
+            {
+              productId: ramProduct ? ramProduct.id : null,
+              itemName: "RAM PC Desktop DDR3 4GB PC-12800 1600MHz Kingston / Hynix Longdimm",
+              qty: 10,
+              costPrice: 65000,
+              receivedQty: 0,
+            },
+          ],
+        },
+      },
+    });
+  }
+
+  if (cahaya) {
+    await prisma.purchaseOrder.create({
+      data: {
+        poNumber: "PO-20261019-002",
+        invoiceNumber: "FAK-CMM-1029",
+        supplierId: cahaya.id,
+        status: "RECEIVED",
+        totalAmount: 3840000,
+        paymentStatus: "PAID",
+        notes: "Grosir monitor second mulus eks-bank, garansi 1 bulan ganti unit.",
+        items: {
+          create: [
+            {
+              productId: mon19 ? mon19.id : null,
+              itemName: "LED / LCD Monitor Komputer PC Desktop & CCTV 19 Inch Wide Second Bergaransi",
+              qty: 8,
+              costPrice: 480000,
+              receivedQty: 8,
+            },
+          ],
+        },
+      },
+    });
+  }
+
+  console.log("Database seeded successfully with all products, customers, suppliers, and purchase orders!");
 }
 
 main()

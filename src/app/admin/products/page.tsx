@@ -275,10 +275,10 @@ export default function AdminProductsPage() {
   }, [products, selectedCategory, stockFilter, search]);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col pb-20 md:pb-6">
       <AdminNav />
 
-      <main className="p-4 sm:p-6 flex-1 flex flex-col gap-6 max-w-7xl mx-auto w-full">
+      <main className="p-3.5 sm:p-6 flex-1 flex flex-col gap-4 sm:gap-6 max-w-7xl mx-auto w-full">
         {/* Page Title & Quick Action */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-2 border-b border-slate-800/80">
           <div>
@@ -470,8 +470,112 @@ export default function AdminProductsPage() {
           </div>
         </div>
 
-        {/* Product Table */}
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/50 backdrop-blur-sm overflow-hidden shadow-xl">
+        {/* 1. SHOPEE SELLER MOBILE PRODUCT CARDS (Smartphone View) */}
+        <div className="md:hidden space-y-2.5">
+          {loading ? (
+            <div className="py-12 text-center text-slate-400 text-xs">
+              <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-blue-500" />
+              Memuat katalog produk...
+            </div>
+          ) : filteredProducts.length === 0 ? (
+            <div className="py-12 text-center text-slate-400 bg-slate-900/50 rounded-2xl border border-slate-800">
+              <Package className="w-10 h-10 mx-auto mb-2 text-slate-600" />
+              <p className="text-sm font-semibold text-slate-300">
+                Tidak ada produk ditemukan
+              </p>
+            </div>
+          ) : (
+            filteredProducts.map((p) => {
+              const catInfo = CATEGORY_MAP[p.category] || {
+                label: p.category,
+                badge: "bg-slate-800 text-slate-300 border-slate-700",
+              };
+
+              return (
+                <div
+                  key={p.id}
+                  className="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 space-y-2.5 shadow-md"
+                >
+                  {/* Top: SKU & Category Badge */}
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-[10px] text-blue-400 px-2 py-0.5 rounded-lg bg-blue-500/10 border border-blue-500/20">
+                      {p.sku}
+                    </span>
+                    <span
+                      className={`px-2 py-0.5 rounded-full text-[9px] font-semibold border ${catInfo.badge}`}
+                    >
+                      {catInfo.label}
+                    </span>
+                  </div>
+
+                  {/* Product Title */}
+                  <h4 className="text-xs font-bold text-white line-clamp-2 leading-snug">
+                    {p.name}
+                  </h4>
+
+                  {/* Price, Margin & Stock Stepper */}
+                  <div className="flex items-center justify-between pt-2 border-t border-slate-800/80">
+                    <div>
+                      <div className="text-sm font-black font-mono text-white">
+                        Rp {p.price.toLocaleString("id-ID")}
+                      </div>
+                      <div className="text-[10px] text-slate-400">
+                        Modal: Rp {p.costPrice.toLocaleString("id-ID")}
+                      </div>
+                    </div>
+
+                    {/* Touch Friendly Stock Controls */}
+                    <div className="flex items-center gap-1.5 bg-slate-950 px-2.5 py-1 rounded-xl border border-slate-800">
+                      <button
+                        onClick={() => handleQuickStockUpdate(p, -1)}
+                        disabled={p.stock <= 0}
+                        className="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 active:bg-slate-700 flex items-center justify-center font-bold text-slate-300 text-sm disabled:opacity-30"
+                      >
+                        -
+                      </button>
+                      <span
+                        className={`w-8 text-center font-mono font-bold text-xs ${
+                          p.stock === 0
+                            ? "text-red-400"
+                            : p.stock <= 5
+                            ? "text-amber-400"
+                            : "text-emerald-400"
+                        }`}
+                      >
+                        {p.stock}
+                      </span>
+                      <button
+                        onClick={() => handleQuickStockUpdate(p, 1)}
+                        className="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 active:bg-slate-700 flex items-center justify-center font-bold text-slate-300 text-sm"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex items-center justify-end gap-2 pt-1 border-t border-slate-800/40">
+                    <button
+                      onClick={() => openEditModal(p)}
+                      className="px-3 py-1 rounded-lg bg-slate-800 text-xs font-medium text-slate-300 hover:text-white"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDeleteProduct(p)}
+                      className="px-3 py-1 rounded-lg bg-red-500/10 text-xs font-medium text-red-400 hover:bg-red-500/20"
+                    >
+                      Hapus
+                    </button>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        {/* 2. DESKTOP ERP TABLE (PC View) */}
+        <div className="hidden md:block rounded-2xl border border-slate-800 bg-slate-900/50 backdrop-blur-sm overflow-hidden shadow-xl">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-950/90 text-slate-400 border-b border-slate-800 uppercase tracking-wider text-[10px] font-bold">

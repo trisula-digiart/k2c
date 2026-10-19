@@ -75,7 +75,189 @@ export const CompactOrderTable: React.FC<CompactOrderTableProps> = ({
 
   return (
     <>
-      <div className="w-full overflow-x-auto rounded-2xl border border-slate-800 bg-slate-900/90 shadow-2xl">
+      {/* 1. SHOPEE SELLER MOBILE ORDER CARDS (Smartphone View) */}
+      <div className="md:hidden space-y-3">
+        {orders.map((order) => {
+          const qcVideo = order.mediaProofs?.find((m: any) => m.type === "QC_VIDEO");
+          const dispatchPhoto = order.mediaProofs?.find((m: any) => m.type === "DISPATCH_PHOTO");
+          const returnMedia = order.mediaProofs?.find((m: any) => m.type === "RETURN_UNBOXING");
+          const totalOrderPrice = order.items?.reduce(
+            (sum: number, it: any) => sum + (it.price || 0) * (it.qty || 1),
+            0
+          );
+
+          return (
+            <div
+              key={order.id}
+              className="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3 shadow-md"
+            >
+              {/* Card Header: Channel & Resi & Status */}
+              <div className="flex items-center justify-between pb-2 border-b border-slate-800/80">
+                <div className="flex items-center gap-2">
+                  <Badge marketplace={order.marketplace} size="xs" />
+                  <div className="flex items-center gap-1 font-mono text-xs font-bold text-sky-400">
+                    <span>{order.receiptNumber}</span>
+                    <button
+                      onClick={() => handleCopyResi(order.receiptNumber)}
+                      className="text-slate-400 hover:text-white"
+                    >
+                      {copiedResi === order.receiptNumber ? (
+                        <Check className="w-3 h-3 text-emerald-400" />
+                      ) : (
+                        <Copy className="w-3 h-3" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                <Badge status={order.status} size="xs" />
+              </div>
+
+              {/* Customer & Timestamp */}
+              <div className="flex items-center justify-between text-xs">
+                <div>
+                  <div className="font-semibold text-white">{order.customerName}</div>
+                  <div className="text-[10px] text-slate-400 font-mono">
+                    {order.orderNumber}
+                  </div>
+                </div>
+
+                {order.customerPhone && (
+                  <a
+                    href={`https://wa.me/${order.customerPhone.replace(/[^0-9]/g, "")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-semibold flex items-center gap-1"
+                  >
+                    <span>WhatsApp</span>
+                  </a>
+                )}
+              </div>
+
+              {/* Items List (Shopee Seller Card style) */}
+              <div className="space-y-1.5 py-1 bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/60">
+                {order.items?.map((it: any) => (
+                  <div key={it.id} className="text-xs">
+                    <div className="flex items-start justify-between">
+                      <span className="text-slate-200 font-medium line-clamp-1 pr-2">
+                        {it.itemName}
+                      </span>
+                      <span className="font-mono text-slate-400 shrink-0">
+                        {it.qty} × Rp {it.price?.toLocaleString("id-ID")}
+                      </span>
+                    </div>
+                    {it.serialNumber && (
+                      <div className="text-[10px] font-mono text-emerald-400 mt-0.5">
+                        SN: {it.serialNumber}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* Media Badges if any */}
+              {(qcVideo || dispatchPhoto || returnMedia) && (
+                <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-0.5">
+                  <span className="text-[10px] text-slate-400">Bukti:</span>
+                  {qcVideo && (
+                    <button
+                      onClick={() =>
+                        setSelectedMedia({
+                          media: qcVideo,
+                          orderNumber: order.orderNumber,
+                          receiptNumber: order.receiptNumber,
+                          publicToken: order.publicToken,
+                        })
+                      }
+                      className="px-2 py-0.5 rounded bg-blue-500/15 text-blue-400 border border-blue-500/30 text-[10px] font-semibold flex items-center gap-1"
+                    >
+                      <Video className="w-3 h-3" />
+                      <span>Video QC</span>
+                    </button>
+                  )}
+                  {dispatchPhoto && (
+                    <button
+                      onClick={() =>
+                        setSelectedMedia({
+                          media: dispatchPhoto,
+                          orderNumber: order.orderNumber,
+                          receiptNumber: order.receiptNumber,
+                          publicToken: order.publicToken,
+                        })
+                      }
+                      className="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-[10px] font-semibold flex items-center gap-1"
+                    >
+                      <Camera className="w-3 h-3" />
+                      <span>Foto Serah Terima</span>
+                    </button>
+                  )}
+                  {returnMedia && (
+                    <button
+                      onClick={() =>
+                        setSelectedMedia({
+                          media: returnMedia,
+                          orderNumber: order.orderNumber,
+                          receiptNumber: order.receiptNumber,
+                          publicToken: order.publicToken,
+                        })
+                      }
+                      className="px-2 py-0.5 rounded bg-rose-500/15 text-rose-400 border border-rose-500/30 text-[10px] font-semibold flex items-center gap-1"
+                    >
+                      <RotateCcw className="w-3 h-3" />
+                      <span>Retur</span>
+                    </button>
+                  )}
+                </div>
+              )}
+
+              {/* Card Footer: Total Price & Quick Action Buttons */}
+              <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between">
+                <div>
+                  <div className="text-[10px] text-slate-400">Total Pesanan</div>
+                  <div className="text-sm font-bold font-mono text-white">
+                    Rp {totalOrderPrice?.toLocaleString("id-ID")}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1.5">
+                  {/* Status Dropdown */}
+                  <select
+                    value={order.status}
+                    onChange={(e) =>
+                      handleStatusSelect(order.id, e.target.value as OrderStatus)
+                    }
+                    disabled={updatingId === order.id}
+                    className="bg-slate-950 border border-slate-800 text-[11px] rounded-lg px-2 py-1.5 text-slate-200 focus:outline-none"
+                  >
+                    {Object.entries(ORDER_STATUS_LABELS).map(([k, v]) => (
+                      <option key={k} value={k}>
+                        {v.label}
+                      </option>
+                    ))}
+                  </select>
+
+                  <button
+                    onClick={() => setSelectedOrderForInvoice(order)}
+                    className="p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white"
+                    title="Cetak Struk"
+                  >
+                    <Printer className="w-4 h-4" />
+                  </button>
+
+                  <Link href={`/tech/task/${order.id}`}>
+                    <button className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-md shadow-blue-600/30">
+                      QC Hub
+                    </button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* 2. DESKTOP ERP HIGH-DENSITY TABLE (PC View) */}
+      <div className="hidden md:block w-full overflow-x-auto rounded-2xl border border-slate-800 bg-slate-900/90 shadow-2xl">
         <table className="w-full text-left border-collapse text-xs">
           <thead>
             <tr className="border-b border-slate-800 bg-slate-950/80 text-[11px] font-semibold text-slate-400 uppercase tracking-wider select-none">
