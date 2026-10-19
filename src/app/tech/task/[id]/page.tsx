@@ -21,11 +21,14 @@ import {
   Image as ImageIcon,
   AlertCircle,
   FileText,
+  QrCode,
+  ScanBarcode,
 } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { WatermarkCamera } from "@/components/tech/WatermarkCamera";
 import { MediaUploader } from "@/components/tech/MediaUploader";
+import { BarcodeScanner } from "@/components/tech/BarcodeScanner";
 import { Modal } from "@/components/ui/Modal";
 import { OrderStatus } from "@/lib/types";
 
@@ -41,9 +44,11 @@ export default function TechnicianTaskDetailPage() {
   const [updatingStatus, setUpdatingStatus] = useState(false);
 
   // Overlays / Modals
-  const [showWatermarkCamera, setShowWatermarkCamera] = useState(false);
+  const [showWatermarkCamera, setShowWatermarkCamera] = useState<"DISPATCH_PHOTO" | "RETURN_UNBOXING" | null>(null);
   const [showVideoRecorder, setShowVideoRecorder] = useState<"QC_VIDEO" | "RETURN_UNBOXING" | null>(null);
   const [activeMediaPreview, setActiveMediaPreview] = useState<any | null>(null);
+  const [scanningItemId, setScanningItemId] = useState<{ id: string; name: string } | null>(null);
+  const [showReturnOptions, setShowReturnOptions] = useState(false);
 
   const fetchOrder = async () => {
     try {
@@ -120,10 +125,11 @@ export default function TechnicianTaskDetailPage() {
   };
 
   const handleWatermarkUploadComplete = async (file: File, metadata: any) => {
+    const uploadType = showWatermarkCamera || "DISPATCH_PHOTO";
     const formData = new FormData();
     formData.append("file", file);
     formData.append("orderId", order.id);
-    formData.append("type", "DISPATCH_PHOTO");
+    formData.append("type", uploadType);
     formData.append("watermarkData", JSON.stringify(metadata));
     formData.append("autoUpdateStatus", "true");
 
@@ -135,8 +141,12 @@ export default function TechnicianTaskDetailPage() {
 
     if (data.success) {
       setOrder(data.order);
-      setShowWatermarkCamera(false);
-      alert("Foto serah terima berhasil diunggah & status pesanan diubah ke DISPATCHED!");
+      setShowWatermarkCamera(null);
+      alert(
+        uploadType === "DISPATCH_PHOTO"
+          ? "Foto serah terima berhasil diunggah & status pesanan diubah ke DISPATCHED!"
+          : "Foto bukti retur berhasil diunggah & status pesanan diubah ke RETURNED!"
+      );
     } else {
       throw new Error(data.error || "Gagal mengunggah foto watermark");
     }
@@ -149,7 +159,17 @@ export default function TechnicianTaskDetailPage() {
       fetchOrder();
     }
     setShowVideoRecorder(null);
-    alert("Video bukti berhasil diunggah ke server lokal!");
+    alert("Video bukti berhasil diunggah!");
+  };
+
+  const handleScanSerialNumber = (scannedCode: string) => {
+    if (scanningItemId) {
+      setSerialNumbers({
+        ...serialNumbers,
+        [scanningItemId.id]: scannedCode,
+      });
+      setScanningItemId(null);
+    }
   };
 
   if (loading) {
@@ -238,7 +258,7 @@ export default function TechnicianTaskDetailPage() {
           </div>
         </section>
 
-        {/* Workflow Action Buttons (Mandatory Instructions) */}
+        {/* Workflow Action Buttons */}
         <section className="p-4 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl space-y-2.5">
           <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
             <ShieldCheck className="w-4 h-4 text-blue-400" />
@@ -273,9 +293,9 @@ export default function TechnicianTaskDetailPage() {
               </div>
             </Button>
 
-            {/* 3. Foto Serah Terima Gerai (Watermark) */}
+            {/* 3. Foto Serah Terima Gerai (Watermark GPS) */}
             <Button
-              onClick={() => setShowWatermarkCamera(true)}
+              onClick={() => setShowWatermarkCamera("DISPATCH_PHOTO")}
               variant="outline"
               className="w-full justify-start py-3 hover:bg-emerald-600/20 hover:border-emerald-500"
               icon={<Camera className="w-4 h-4 text-emerald-400" />}
@@ -288,7 +308,7 @@ export default function TechnicianTaskDetailPage() {
 
             {/* 4. Dokumentasi Retur */}
             <Button
-              onClick={() => setShowVideoRecorder("RETURN_UNBOXING")}
+              onClick={() => setShowReturnOptions(true)}
               variant="outline"
               className="w-full justify-start py-3 hover:bg-rose-600/20 hover:border-rose-500"
               icon={<RotateCcw className="w-4 h-4 text-rose-400" />}
@@ -301,13 +321,18 @@ export default function TechnicianTaskDetailPage() {
           </div>
         </section>
 
-        {/* Item List with Serial Number Editor */}
+        {/* Item List with Serial Number Editor & Barcode Scanner */}
         <section className="p-4 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-              <Package className="w-4 h-4 text-sky-400" />
-              Daftar Barang &amp; Input No. Seri (SN)
-            </h3>
+            <div>
+              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                <Package className="w-4 h-4 text-sky-400" />
+                Daftar Barang &amp; No. Seri (SN)
+              </h3>
+              <p className="text-[11px] text-slate-500">
+                Ketik atau ketuk tombol kamera untuk scan barcode SN langsung.
+              </p>
+            </div>
             <Button
               onClick={handleSaveSerialNumbers}
               size="xs"
@@ -315,12 +340,12 @@ export default function TechnicianTaskDetailPage() {
               loading={savingSerials}
               icon={<Save className="w-3.5 h-3.5" />}
             >
-              Simpan No. Seri
+              Simpan SN
             </Button>
           </div>
 
           <div className="space-y-3 pt-1">
-            {order.items?.map((item: any, idx: number) => (
+            {order.items?.map((item: any) => (
               <div
                 key={item.id}
                 className="p-3 rounded-xl bg-slate-950 border border-slate-800/80 space-y-2"
@@ -335,7 +360,7 @@ export default function TechnicianTaskDetailPage() {
                   </span>
                 </div>
 
-                {/* Serial Number Input */}
+                {/* Serial Number Input with Direct Camera Scanner Trigger */}
                 <div className="flex items-center gap-2">
                   <label className="text-[11px] font-mono text-slate-400 shrink-0">
                     No. Seri:
@@ -352,6 +377,15 @@ export default function TechnicianTaskDetailPage() {
                     placeholder="Contoh: SN-K2C-202610-XXX"
                     className="flex-1 px-2.5 py-1.5 bg-slate-900 border border-slate-700 focus:border-blue-500 rounded-lg text-xs font-mono text-emerald-400 placeholder-slate-600 focus:outline-none"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setScanningItemId({ id: item.id, name: item.itemName })}
+                    className="p-2 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border border-blue-500/30 text-xs flex items-center gap-1 active:scale-95 transition-all"
+                    title="Scan Barcode Nomor Seri dengan Kamera"
+                  >
+                    <ScanBarcode className="w-4 h-4" />
+                    <span className="hidden sm:inline text-[10px] font-bold">Scan SN</span>
+                  </button>
                 </div>
               </div>
             ))}
@@ -435,13 +469,86 @@ export default function TechnicianTaskDetailPage() {
         </section>
       </main>
 
+      {/* Modal: Scan Barcode Serial Number for a specific item */}
+      {scanningItemId && (
+        <Modal
+          isOpen={true}
+          onClose={() => setScanningItemId(null)}
+          title={
+            <div className="flex items-center gap-2">
+              <ScanBarcode className="w-5 h-5 text-blue-400" />
+              <span>Scan Barcode Serial Number</span>
+            </div>
+          }
+          description={`Komponen: ${scanningItemId.name}`}
+          size="md"
+        >
+          <div className="space-y-4">
+            <BarcodeScanner
+              onScan={handleScanSerialNumber}
+              placeholder="Arahkan ke Barcode SN komponen..."
+            />
+            <p className="text-xs text-slate-400 text-center">
+              Arahkan kamera ke barcode SN pada stiker produk atau ketik manual jika barcode pudar.
+            </p>
+          </div>
+        </Modal>
+      )}
+
+      {/* Modal: Pilihan Dokumentasi Retur (Video vs Foto Watermark) */}
+      {showReturnOptions && (
+        <Modal
+          isOpen={true}
+          onClose={() => setShowReturnOptions(false)}
+          title="Pilih Metode Dokumentasi Retur / RMA"
+          size="sm"
+        >
+          <div className="space-y-3 pt-2">
+            <Button
+              onClick={() => {
+                setShowReturnOptions(false);
+                setShowVideoRecorder("RETURN_UNBOXING");
+              }}
+              variant="outline"
+              className="w-full justify-start py-3 hover:border-rose-500"
+              icon={<Video className="w-5 h-5 text-rose-400" />}
+            >
+              <div className="text-left">
+                <div className="font-bold text-sm text-white">Rekam Video Unboxing Retur</div>
+                <div className="text-xs text-slate-400">Video pembongkaran paket RMA berdurasi</div>
+              </div>
+            </Button>
+
+            <Button
+              onClick={() => {
+                setShowReturnOptions(false);
+                setShowWatermarkCamera("RETURN_UNBOXING");
+              }}
+              variant="outline"
+              className="w-full justify-start py-3 hover:border-rose-500"
+              icon={<Camera className="w-5 h-5 text-amber-400" />}
+            >
+              <div className="text-left">
+                <div className="font-bold text-sm text-white">Foto Kondisi Unit (Watermark GPS)</div>
+                <div className="text-xs text-slate-400">Foto bukti fisik/segel rusak berstempel GPS</div>
+              </div>
+            </Button>
+          </div>
+        </Modal>
+      )}
+
       {/* Watermark Camera Overlay */}
       {showWatermarkCamera && (
         <WatermarkCamera
           receiptNumber={order.receiptNumber}
           orderId={order.id}
+          title={
+            showWatermarkCamera === "DISPATCH_PHOTO"
+              ? "Foto Bukti Serah Terima Gerai / Kurir"
+              : "Foto Bukti Dokumentasi Retur / RMA"
+          }
           onCaptureComplete={handleWatermarkUploadComplete}
-          onClose={() => setShowWatermarkCamera(false)}
+          onClose={() => setShowWatermarkCamera(null)}
         />
       )}
 

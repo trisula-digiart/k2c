@@ -35,6 +35,15 @@ export default function InvoicePrintPage() {
     if (id) fetchInvoice();
   }, [id]);
 
+  useEffect(() => {
+    if (order && searchParams.get("print") === "1") {
+      const timer = setTimeout(() => {
+        window.print();
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [order, searchParams]);
+
   const calculateTotal = () => {
     return (order?.items || []).reduce(
       (sum: number, item: any) => sum + (item.price || 0) * (item.qty || 1),

@@ -34,7 +34,7 @@ export const InvoicePrintModal: React.FC<InvoicePrintModalProps> = ({
   };
 
   const handleDirectPrint = () => {
-    window.open(`/admin/invoices/${order.id}?format=${printFormat}`, "_blank");
+    window.open(`/admin/invoices/${order.id}?format=${printFormat}&print=1`, "_blank");
   };
 
   return (
