@@ -11,3 +11,6 @@ dev.db-journal
 !/public/uploads/returns/.gitkeep
 /public/uploads/dispatches/*
 !/public/uploads/dispatches/.gitkeep
+
+.vercel
+.env*

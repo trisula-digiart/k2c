@@ -18,7 +18,7 @@ import {
   QrCode,
 } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
-import { OrderStatus, ORDER_STATUS_LABELS } from "@/lib/db";
+import { OrderStatus, ORDER_STATUS_LABELS } from "@/lib/types";
 import { VideoPreviewModal } from "@/components/admin/VideoPreviewModal";
 import { InvoicePrintModal } from "@/components/admin/InvoicePrintModal";
 

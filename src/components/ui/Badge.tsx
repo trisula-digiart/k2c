@@ -1,5 +1,5 @@
 import React from "react";
-import { OrderStatus, ORDER_STATUS_LABELS } from "@/lib/db";
+import { OrderStatus, ORDER_STATUS_LABELS } from "@/lib/types";
 
 interface BadgeProps {
   status?: OrderStatus | string;
@@ -29,7 +29,6 @@ export const Badge: React.FC<BadgeProps> = ({
   // If status is passed, use defined status labels & colors
   if (status && ORDER_STATUS_LABELS[status as OrderStatus]) {
     const meta = ORDER_STATUS_LABELS[status as OrderStatus];
-    const isPulsing = status === "QC_IN_PROGRESS" || status === "PENDING";
     return (
       <span
         className={`inline-flex items-center font-medium border rounded-full ${meta.bg} ${meta.color} ${sizeStyles} ${className}`}

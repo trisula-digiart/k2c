@@ -27,7 +27,7 @@ import { Button } from "@/components/ui/Button";
 import { WatermarkCamera } from "@/components/tech/WatermarkCamera";
 import { MediaUploader } from "@/components/tech/MediaUploader";
 import { Modal } from "@/components/ui/Modal";
-import { OrderStatus } from "@/lib/db";
+import { OrderStatus } from "@/lib/types";
 
 export default function TechnicianTaskDetailPage() {
   const params = useParams();

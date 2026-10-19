@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { CompactOrderTable } from "@/components/admin/CompactOrderTable";
 import { Button } from "@/components/ui/Button";
-import { OrderStatus } from "@/lib/db";
+import { OrderStatus } from "@/lib/types";
 
 export default function AdminDashboardPage() {
   const [orders, setOrders] = useState<any[]>([]);

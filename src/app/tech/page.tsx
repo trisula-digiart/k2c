@@ -19,7 +19,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
-import { OrderStatus } from "@/lib/db";
+import { OrderStatus } from "@/lib/types";
 
 export default function TechnicianWorklistPage() {
   const [orders, setOrders] = useState<any[]>([]);
