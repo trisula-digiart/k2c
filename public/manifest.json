@@ -9,6 +9,7 @@
   "background_color": "#020617",
   "theme_color": "#020617",
   "orientation": "portrait-primary",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/icons/icon-192x192.png",
@@ -33,6 +34,22 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Admin POS",
+      "short_name": "Admin",
+      "description": "Buka Dashboard Admin POS K2C",
+      "url": "/admin",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Teknisi Hub",
+      "short_name": "Teknisi",
+      "description": "Buka Workspace Teknisi & QC Scanner",
+      "url": "/tech",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
     }
   ],
   "categories": ["business", "productivity", "shopping"]
