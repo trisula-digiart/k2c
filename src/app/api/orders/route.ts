@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { ensureDatabaseSeeded } from "@/lib/auto-seed";
 import crypto from "crypto";
 
 export async function GET(request: NextRequest) {
   try {
+    await ensureDatabaseSeeded();
     const { searchParams } = new URL(request.url);
     const q = searchParams.get("q")?.trim() || "";
     const status = searchParams.get("status")?.trim() || "";
