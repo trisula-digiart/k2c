@@ -13,11 +13,11 @@ import {
   Database,
   HardDrive,
   Cpu,
-  CheckCircle2,
-  ExternalLink,
-  Plus,
+  Layers,
+  Sparkles,
+  ArrowRight,
+  Package,
 } from "lucide-react";
-import { Button } from "@/components/ui/Button";
 
 export default function HomePage() {
   const [stats, setStats] = useState({
@@ -26,7 +26,6 @@ export default function HomePage() {
     inProgress: 1,
     completed: 1,
     dispatched: 1,
-    returned: 1,
   });
 
   useEffect(() => {
@@ -41,7 +40,6 @@ export default function HomePage() {
             inProgress: orders.filter((o: any) => o.status === "QC_IN_PROGRESS").length,
             completed: orders.filter((o: any) => o.status === "QC_COMPLETED").length,
             dispatched: orders.filter((o: any) => o.status === "DISPATCHED").length,
-            returned: orders.filter((o: any) => o.status === "RETURNED").length,
           });
         }
       })
@@ -49,184 +47,187 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between selection:bg-blue-600">
-      {/* Top Navbar */}
-      <nav className="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md px-6 py-4">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between selection:bg-blue-600 font-sans">
+      {/* Top Header */}
+      <header className="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-md px-6 py-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-blue-600 flex items-center justify-center font-black text-white text-lg shadow-lg shadow-blue-500/20">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-700 to-sky-500 flex items-center justify-center font-black text-white text-lg shadow-lg shadow-blue-500/25">
               K2C
             </div>
             <div>
-              <span className="text-base font-black text-white tracking-tight">
-                K2C KOMPUTINDO
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-base font-black text-white tracking-tight">
+                  K2C KOMPUTINDO
+                </span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 font-semibold">
+                  v1.0 Production
+                </span>
+              </div>
               <p className="text-[11px] text-slate-400">
-                Pusat Komputer, Perakitan &amp; QC Tracker
+                Pusat Komputer, QC Tracker &amp; Dispatch POS
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5 font-medium">
+            <span className="text-xs px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5 font-medium">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              Sistem Operasional Lokal Aktif
+              Sistem Aktif ({stats.total} Pesanan)
             </span>
           </div>
         </div>
-      </nav>
+      </header>
 
-      {/* Hero Section */}
-      <main className="max-w-6xl mx-auto w-full px-6 py-10 flex-1 flex flex-col justify-center">
-        <div className="text-center max-w-2xl mx-auto mb-10 space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold">
-            <ShieldCheck className="w-4 h-4" />
-            Dual-Interface Production System
+      {/* Main Choice Section */}
+      <main className="max-w-6xl mx-auto w-full px-6 py-8 md:py-12 flex-1 flex flex-col justify-center">
+        {/* Title */}
+        <div className="text-center max-w-2xl mx-auto mb-8 md:mb-12 space-y-2">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold">
+            <Sparkles className="w-3.5 h-3.5" />
+            Pilih Mode Akses Anda
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight leading-tight">
-            Desktop POS &amp; Mobile Technician Hub
+          <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
+            Portal Utama K2C Komputindo
           </h1>
-          <p className="text-sm text-slate-400">
-            Sistem manajemen order multi-marketplace terpadu dengan pelacakan
-            pengujian mutu (QC video), nomor seri produk (SN), dan bukti serah
-            terima ber-watermark koordinat GPS.
+          <p className="text-xs sm:text-sm text-slate-400">
+            Silakan pilih antarmuka yang sesuai dengan perangkat dan peran operasional Anda.
           </p>
         </div>
 
-        {/* Dual Portal Selection Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-          {/* Card 1: Desktop Admin Hub */}
+        {/* 2 Big Distinct Action Cards: ADMIN vs TEKNISI */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto w-full">
+          {/* OPTION 1: ADMIN */}
           <Link
             href="/admin"
-            className="group relative p-8 rounded-3xl bg-slate-900 border border-slate-800 hover:border-blue-500/60 shadow-2xl transition-all hover:scale-[1.01] flex flex-col justify-between overflow-hidden"
+            className="group relative p-8 rounded-3xl bg-gradient-to-b from-slate-900 to-slate-900/90 border-2 border-slate-800 hover:border-blue-500 shadow-2xl transition-all duration-200 hover:-translate-y-1 flex flex-col justify-between overflow-hidden"
           >
-            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl -mr-10 -mt-10 group-hover:bg-blue-500/20 transition-colors" />
+            {/* Background glowing orb */}
+            <div className="absolute top-0 right-0 w-48 h-48 bg-blue-600/10 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-blue-600/25 transition-all duration-300 pointer-events-none" />
 
             <div>
-              <div className="w-14 h-14 rounded-2xl bg-blue-600/15 border border-blue-500/30 text-blue-400 flex items-center justify-center mb-6 shadow-inner">
-                <Monitor className="w-7 h-7" />
+              <div className="flex items-center justify-between mb-6">
+                <div className="w-16 h-16 rounded-2xl bg-blue-600/20 border border-blue-500/40 text-blue-400 flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all duration-200">
+                  <Monitor className="w-8 h-8" />
+                </div>
+                <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-lg bg-blue-500/15 text-blue-400 border border-blue-500/30">
+                  DESKTOP / KASIR
+                </span>
               </div>
 
-              <div className="inline-block text-[10px] font-mono px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30 mb-2 font-semibold">
-                DESKTOP / SERVER PC
-              </div>
-
-              <h2 className="text-xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors flex items-center gap-2">
-                Desktop Admin &amp; POS Hub
-                <ChevronRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <h2 className="text-2xl font-black text-white mb-2 group-hover:text-blue-400 transition-colors flex items-center gap-2">
+                Portal Admin &amp; POS
+                <ChevronRight className="w-6 h-6 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
               </h2>
 
               <p className="text-xs text-slate-400 leading-relaxed mb-6">
-                Papan kontrol live dispatch berdensitas tinggi, input pesanan Tokopedia,
-                Shopee, TikTok Shop &amp; Kasir Offline, pemutar video QC, dan pencetakan
-                invoice Thermal 58mm/80mm serta A4.
+                Untuk kasir, admin toko, dan operator gudang:
               </p>
 
-              <div className="grid grid-cols-2 gap-2 text-xs font-mono text-slate-300">
-                <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center gap-2">
-                  <Printer className="w-4 h-4 text-sky-400" />
-                  <span>Thermal / A4 Print</span>
-                </div>
-                <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center gap-2">
-                  <Video className="w-4 h-4 text-blue-400" />
-                  <span>QC Video Player</span>
-                </div>
-              </div>
+              <ul className="space-y-2 text-xs text-slate-300 font-medium mb-8">
+                <li className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                  <span>Papan Live Dispatch pesanan semua marketplace</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                  <span>Input Pesanan Baru (Tokopedia, Shopee, TikTok, Kasir)</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                  <span>Cetak Struk Thermal (58mm / 80mm) &amp; Faktur A4</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                  <span>Pemutar video QC langsung &amp; monitoring retur</span>
+                </li>
+              </ul>
             </div>
 
-            <div className="mt-8 pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs font-semibold text-blue-400">
-              <span>Buka Admin Hub &amp; POS Board</span>
-              <span className="w-8 h-8 rounded-full bg-blue-600/20 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all">
-                →
-              </span>
+            <div className="pt-4 border-t border-slate-800 flex items-center justify-between text-sm font-bold text-white bg-blue-600 px-5 py-3 rounded-2xl group-hover:bg-blue-500 shadow-lg shadow-blue-600/30 transition-all">
+              <span>Masuk Sebagai Admin</span>
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </div>
           </Link>
 
-          {/* Card 2: Mobile Technician Hub (PWA) */}
+          {/* OPTION 2: TEKNISI */}
           <Link
             href="/tech"
-            className="group relative p-8 rounded-3xl bg-slate-900 border border-slate-800 hover:border-emerald-500/60 shadow-2xl transition-all hover:scale-[1.01] flex flex-col justify-between overflow-hidden"
+            className="group relative p-8 rounded-3xl bg-gradient-to-b from-slate-900 to-slate-900/90 border-2 border-slate-800 hover:border-emerald-500 shadow-2xl transition-all duration-200 hover:-translate-y-1 flex flex-col justify-between overflow-hidden"
           >
-            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl -mr-10 -mt-10 group-hover:bg-emerald-500/20 transition-colors" />
+            {/* Background glowing orb */}
+            <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-600/10 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-emerald-600/25 transition-all duration-300 pointer-events-none" />
 
             <div>
-              <div className="w-14 h-14 rounded-2xl bg-emerald-600/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mb-6 shadow-inner">
-                <Smartphone className="w-7 h-7" />
+              <div className="flex items-center justify-between mb-6">
+                <div className="w-16 h-16 rounded-2xl bg-emerald-600/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-200">
+                  <Smartphone className="w-8 h-8" />
+                </div>
+                <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                  MOBILE PWA / TEKNISI
+                </span>
               </div>
 
-              <div className="inline-block text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 mb-2 font-semibold">
-                MOBILE PWA / SMARTPHONE
-              </div>
-
-              <h2 className="text-xl font-bold text-white mb-2 group-hover:text-emerald-400 transition-colors flex items-center gap-2">
-                Mobile Technician Hub (PWA)
-                <ChevronRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <h2 className="text-2xl font-black text-white mb-2 group-hover:text-emerald-400 transition-colors flex items-center gap-2">
+                Portal Teknisi &amp; QC
+                <ChevronRight className="w-6 h-6 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
               </h2>
 
               <p className="text-xs text-slate-400 leading-relaxed mb-6">
-                Antarmuka responsif ramah jempol untuk teknisi lapangan/bench.
-                Dilengkapi kamera scanner barcode resi, perekam video QC 720p terkompresi,
-                pencatatan nomor seri, dan kamera bukti serah terima watermark GPS.
+                Untuk teknisi bench perakitan, QC &amp; serah terima kurir:
               </p>
 
-              <div className="grid grid-cols-2 gap-2 text-xs font-mono text-slate-300">
-                <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center gap-2">
-                  <QrCode className="w-4 h-4 text-emerald-400" />
-                  <span>Kamera Scanner Resi</span>
-                </div>
-                <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-sky-400" />
-                  <span>Watermark GPS</span>
-                </div>
-              </div>
+              <ul className="space-y-2 text-xs text-slate-300 font-medium mb-8">
+                <li className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  <span>Kamera Scanner Barcode / QR Code resi pengiriman</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  <span>Perekaman Video QC 720p langsung terkompresi</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  <span>Kamera Bukti Serah Terima Watermark GPS &amp; Waktu WIB</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  <span>Input &amp; update nomor seri (Serial Number) unit</span>
+                </li>
+              </ul>
             </div>
 
-            <div className="mt-8 pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs font-semibold text-emerald-400">
-              <span>Buka Mobile Hub Teknisi</span>
-              <span className="w-8 h-8 rounded-full bg-emerald-600/20 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-all">
-                →
-              </span>
+            <div className="pt-4 border-t border-slate-800 flex items-center justify-between text-sm font-bold text-white bg-emerald-600 px-5 py-3 rounded-2xl group-hover:bg-emerald-500 shadow-lg shadow-emerald-600/30 transition-all">
+              <span>Masuk Sebagai Teknisi</span>
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </div>
           </Link>
         </div>
 
-        {/* Quick Links & Live Status Bar */}
-        <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-          <div className="flex items-center gap-4 flex-wrap justify-center sm:justify-start">
-            <span className="flex items-center gap-1.5 font-mono text-slate-300">
-              <Database className="w-4 h-4 text-blue-400" /> SQLite Database: Aktif ({stats.total} Pesanan)
-            </span>
-            <span className="flex items-center gap-1.5 font-mono text-slate-300">
-              <HardDrive className="w-4 h-4 text-emerald-400" /> File Storage: /public/uploads
-            </span>
-            <span className="flex items-center gap-1.5 font-mono text-slate-300">
-              <Cpu className="w-4 h-4 text-purple-400" /> Client Compression: Active
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Link
-              href="/admin/orders/new"
-              className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs flex items-center gap-1 transition-all"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              Order Baru
-            </Link>
-            <Link
-              href="/tech/scan"
-              className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-xs flex items-center gap-1 transition-all"
-            >
-              <QrCode className="w-3.5 h-3.5" />
-              Scan Barcode
-            </Link>
-          </div>
+        {/* Quick Scan & Verification Pill */}
+        <div className="mt-8 flex items-center justify-center gap-3 text-xs text-slate-400">
+          <span>Akses Cepat Langsung:</span>
+          <Link
+            href="/tech/scan"
+            className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-sky-400 font-mono flex items-center gap-1.5 transition-colors"
+          >
+            <QrCode className="w-3.5 h-3.5" />
+            <span>Kamera Scanner Resi</span>
+          </Link>
+          <Link
+            href="/qc-public/k2c-tok-8f92a1"
+            target="_blank"
+            className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 font-mono flex items-center gap-1.5 transition-colors"
+          >
+            <span>Contoh Verifikasi Pelanggan ↗</span>
+          </Link>
         </div>
       </main>
 
       {/* Footer */}
       <footer className="border-t border-slate-800/80 py-4 text-center text-xs text-slate-500 bg-slate-950">
         <p>
-          © 2026 K2C Komputindo • Sistem POS, QC Tracker &amp; PWA • Trisula Framework
+          © 2026 K2C Komputindo • Trisula Framework • Production Ready
         </p>
       </footer>
     </div>
